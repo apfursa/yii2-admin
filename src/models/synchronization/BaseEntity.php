@@ -18,6 +18,8 @@ class BaseEntity extends ActiveRecord
 
     public static $synchronizationFullGetJob = '';
 
+    public static $synchronizationDiffJob = '';
+
     public static function createColumns(array $addFieldNames)
     {
         $fields = static::getB24Fields();
@@ -161,6 +163,19 @@ class BaseEntity extends ActiveRecord
             Yii::createObject(
                 [
                     'class' => static::$synchronizationDeltaJob,
+                    'modelClass' => static::class
+                ]
+            )
+        );
+
+        return $id;
+    }
+
+    public static function synchronizationDiff(){
+        $id = Yii::$app->queue->push(
+            Yii::createObject(
+                [
+                    'class' => static::$synchronizationDiffJob,
                     'modelClass' => static::class
                 ]
             )
